@@ -1,0 +1,793 @@
+/*
+    ===========================
+    스타일시트 - 할일 목록 애플리케이션
+    Stylesheet - To-Do List Application
+    ===========================
+
+    이 CSS 파일은 애플리케이션의 모든 시각적 스타일을 정의합니다.
+    This CSS file defines all visual styles for the application.
+
+    주요 기능 (Main Features):
+    - 반응형 디자인 (Responsive design)
+    - 모던한 UI/UX (Modern UI/UX)
+    - 애니메이션 효과 (Animation effects)
+    - 접근성 고려 (Accessibility considerations)
+*/
+
+/*
+    ===========================
+    CSS 변수 (CSS Variables)
+    ===========================
+
+    CSS 변수는 재사용 가능한 값을 저장합니다.
+    CSS variables store reusable values.
+
+    장점 (Benefits):
+    - 일관된 디자인 유지 (Maintain consistent design)
+    - 쉬운 테마 변경 (Easy theme changes)
+    - 코드 중복 감소 (Reduce code duplication)
+
+    :root는 문서의 최상위 요소를 의미합니다 (HTML 태그)
+    :root refers to the document's root element (HTML tag)
+*/
+:root {
+    /* 색상 팔레트 (Color Palette) */
+    --primary-color: #4f46e5;        /* 주 색상 (Primary color) - 인디고 블루 */
+    --primary-dark: #4338ca;         /* 진한 주 색상 (Darker primary) */
+    --secondary-color: #10b981;      /* 보조 색상 (Secondary color) - 초록 */
+    --danger-color: #ef4444;         /* 위험/삭제 색상 (Danger/Delete color) - 빨강 */
+    --warning-color: #f59e0b;        /* 경고 색상 (Warning color) - 주황 */
+
+    /* 배경 색상 (Background Colors) */
+    --bg-primary: #ffffff;           /* 주 배경 (Primary background) - 흰색 */
+    --bg-secondary: #f9fafb;         /* 보조 배경 (Secondary background) - 연한 회색 */
+    --bg-hover: #f3f4f6;            /* 호버 배경 (Hover background) */
+
+    /* 텍스트 색상 (Text Colors) */
+    --text-primary: #111827;         /* 주 텍스트 (Primary text) - 거의 검정 */
+    --text-secondary: #6b7280;       /* 보조 텍스트 (Secondary text) - 회색 */
+    --text-light: #9ca3af;          /* 연한 텍스트 (Light text) */
+
+    /* 테두리 색상 (Border Colors) */
+    --border-color: #e5e7eb;        /* 기본 테두리 (Default border) */
+    --border-focus: #4f46e5;        /* 포커스 테두리 (Focus border) */
+
+    /* 그림자 (Shadows) */
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+
+    /* 간격 (Spacing) */
+    --spacing-xs: 0.5rem;   /* 8px */
+    --spacing-sm: 0.75rem;  /* 12px */
+    --spacing-md: 1rem;     /* 16px */
+    --spacing-lg: 1.5rem;   /* 24px */
+    --spacing-xl: 2rem;     /* 32px */
+
+    /* 둥근 모서리 (Border Radius) */
+    --radius-sm: 0.375rem;  /* 6px */
+    --radius-md: 0.5rem;    /* 8px */
+    --radius-lg: 0.75rem;   /* 12px */
+
+    /* 전환 효과 (Transitions) */
+    --transition-fast: 150ms ease-in-out;
+    --transition-normal: 300ms ease-in-out;
+}
+
+/*
+    ===========================
+    리셋 및 기본 스타일
+    Reset and Base Styles
+    ===========================
+
+    브라우저마다 다른 기본 스타일을 통일합니다.
+    Normalizes different default styles across browsers.
+*/
+
+/*
+    * (전체 선택자 - Universal Selector)
+    모든 요소에 적용됩니다.
+    Applies to all elements.
+*/
+* {
+    margin: 0;                      /* 기본 마진 제거 (Remove default margin) */
+    padding: 0;                     /* 기본 패딩 제거 (Remove default padding) */
+    box-sizing: border-box;         /* 패딩과 테두리를 너비에 포함 (Include padding/border in width) */
+}
+
+/*
+    body 요소 스타일
+    Body element styles
+
+    body는 페이지의 모든 콘텐츠를 포함합니다.
+    Body contains all page content.
+*/
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+                 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+                 sans-serif;        /* 시스템 폰트 사용 (Use system fonts) */
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);  /* 그라디언트 배경 */
+    color: var(--text-primary);     /* CSS 변수 사용 (Use CSS variable) */
+    line-height: 1.6;               /* 줄 간격 (Line spacing) */
+    min-height: 100vh;              /* 최소 높이를 화면 전체로 (Min height = full viewport) */
+    padding: var(--spacing-lg);     /* 여백 추가 (Add padding) */
+}
+
+/*
+    ===========================
+    메인 컨테이너
+    Main Container
+    ===========================
+
+    모든 콘텐츠를 감싸는 중앙 정렬 컨테이너
+    Centered container wrapping all content
+*/
+.container {
+    max-width: 800px;               /* 최대 너비 제한 (Limit max width) */
+    margin: 0 auto;                 /* 수평 중앙 정렬 (Center horizontally) */
+    background-color: var(--bg-primary);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;               /* 넘치는 콘텐츠 숨김 (Hide overflow) */
+}
+
+/*
+    ===========================
+    헤더 스타일
+    Header Styles
+    ===========================
+*/
+.header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: var(--spacing-xl);
+    text-align: center;
+}
+
+.header h1 {
+    font-size: 2.5rem;              /* 2.5 * 기본 폰트 크기 (2.5 * base font size) */
+    margin-bottom: var(--spacing-sm);
+    font-weight: 700;               /* 굵은 폰트 (Bold font) */
+}
+
+.subtitle {
+    font-size: 1rem;
+    opacity: 0.9;                   /* 약간 투명하게 (Slightly transparent) */
+    font-weight: 300;               /* 얇은 폰트 (Thin font) */
+}
+
+/*
+    ===========================
+    API 연결 상태 표시
+    API Connection Status
+    ===========================
+
+    API 서버와의 연결 상태를 시각적으로 표시
+    Visually displays connection status with API server
+*/
+.status-container {
+    padding: var(--spacing-md) var(--spacing-xl);
+    background-color: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.status-indicator {
+    display: flex;                  /* Flexbox 레이아웃 사용 (Use flexbox layout) */
+    align-items: center;            /* 수직 중앙 정렬 (Vertical center alignment) */
+    gap: var(--spacing-sm);         /* 요소 간 간격 (Space between elements) */
+    font-size: 0.875rem;            /* 0.875 * 기본 크기 = 14px */
+}
+
+/*
+    상태 점 (Status Dot)
+    기본 상태 - 회색 (Default state - gray)
+*/
+.status-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;             /* 완전한 원 (Perfect circle) */
+    background-color: var(--text-light);
+    animation: pulse 2s infinite;   /* 2초마다 반복되는 애니메이션 (Animation repeats every 2s) */
+}
+
+/*
+    연결됨 상태 - 초록색
+    Connected state - Green
+*/
+.status-indicator.connected .status-dot {
+    background-color: var(--secondary-color);
+}
+
+/*
+    연결 끊김 상태 - 빨간색
+    Disconnected state - Red
+*/
+.status-indicator.disconnected .status-dot {
+    background-color: var(--danger-color);
+}
+
+/*
+    펄스 애니메이션 (Pulse Animation)
+    점이 부드럽게 깜빡이는 효과
+    Smooth blinking effect for the dot
+
+    @keyframes: 애니메이션의 각 단계를 정의
+    @keyframes: Defines each step of the animation
+*/
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;                 /* 완전 불투명 (Fully opaque) */
+    }
+    50% {
+        opacity: 0.5;               /* 반투명 (Semi-transparent) */
+    }
+}
+
+/*
+    ===========================
+    메시지 영역 (에러/성공)
+    Message Area (Error/Success)
+    ===========================
+
+    사용자에게 피드백을 제공하는 메시지 박스
+    Message boxes that provide feedback to users
+*/
+
+/* 에러 메시지 (Error Message) */
+.error-message {
+    margin: var(--spacing-md) var(--spacing-xl) 0;
+    padding: var(--spacing-md);
+    background-color: #fee2e2;      /* 연한 빨강 배경 (Light red background) */
+    border-left: 4px solid var(--danger-color);  /* 왼쪽 강조 테두리 (Left accent border) */
+    color: #991b1b;                 /* 진한 빨강 텍스트 (Dark red text) */
+    border-radius: var(--radius-sm);
+    animation: slideIn 0.3s ease-out;  /* 슬라이드 인 효과 (Slide-in effect) */
+}
+
+/* 성공 메시지 (Success Message) */
+.success-message {
+    margin: var(--spacing-md) var(--spacing-xl) 0;
+    padding: var(--spacing-md);
+    background-color: #d1fae5;      /* 연한 초록 배경 (Light green background) */
+    border-left: 4px solid var(--secondary-color);
+    color: #065f46;                 /* 진한 초록 텍스트 (Dark green text) */
+    border-radius: var(--radius-sm);
+    animation: slideIn 0.3s ease-out;
+}
+
+/* 슬라이드 인 애니메이션 (Slide-in Animation) */
+@keyframes slideIn {
+    from {
+        transform: translateY(-20px);  /* 위에서 (From top) */
+        opacity: 0;                    /* 투명 (Transparent) */
+    }
+    to {
+        transform: translateY(0);      /* 원위치 (Original position) */
+        opacity: 1;                    /* 불투명 (Opaque) */
+    }
+}
+
+/*
+    ===========================
+    할일 추가 폼
+    Add To-Do Form
+    ===========================
+*/
+.add-todo-container {
+    padding: var(--spacing-xl);
+    background-color: var(--bg-primary);
+    border-bottom: 2px solid var(--border-color);
+}
+
+.add-todo-form {
+    display: flex;                  /* Flexbox로 가로 배치 (Horizontal layout with flexbox) */
+    gap: var(--spacing-md);         /* 입력과 버튼 사이 간격 (Space between input and button) */
+}
+
+/*
+    할일 입력 필드
+    To-Do Input Field
+*/
+.todo-input {
+    flex: 1;                        /* 남은 공간 모두 차지 (Take all remaining space) */
+    padding: var(--spacing-md);
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-md);
+    font-size: 1rem;
+    transition: border-color var(--transition-fast);  /* 부드러운 테두리 색상 전환 */
+    outline: none;                  /* 기본 포커스 테두리 제거 (Remove default focus border) */
+}
+
+/*
+    :focus - 입력 필드에 포커스가 있을 때
+    :focus - When input field is focused
+*/
+.todo-input:focus {
+    border-color: var(--border-focus);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);  /* 포커스 하이라이트 (Focus highlight) */
+}
+
+/*
+    :hover - 마우스를 올렸을 때
+    :hover - When mouse is over the element
+*/
+.todo-input:hover {
+    border-color: var(--text-light);
+}
+
+/*
+    추가 버튼
+    Add Button
+*/
+.btn-add {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-md) var(--spacing-lg);
+    background-color: var(--primary-color);
+    color: white;
+    border: none;                   /* 기본 버튼 테두리 제거 (Remove default button border) */
+    border-radius: var(--radius-md);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;                /* 마우스 포인터 모양 변경 (Change mouse cursor) */
+    transition: all var(--transition-fast);
+    white-space: nowrap;            /* 텍스트 줄바꿈 방지 (Prevent text wrapping) */
+}
+
+.btn-add:hover {
+    background-color: var(--primary-dark);
+    transform: translateY(-2px);    /* 살짝 위로 이동 (Slight upward movement) */
+    box-shadow: var(--shadow-md);
+}
+
+/*
+    :active - 클릭하는 순간
+    :active - At the moment of clicking
+*/
+.btn-add:active {
+    transform: translateY(0);       /* 원위치 (Back to original position) */
+}
+
+.btn-icon {
+    font-size: 1.2rem;
+}
+
+/*
+    ===========================
+    필터 버튼
+    Filter Buttons
+    ===========================
+*/
+.filter-container {
+    display: flex;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-md) var(--spacing-xl);
+    background-color: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.filter-btn {
+    flex: 1;                        /* 모든 버튼이 동일한 너비 (All buttons equal width) */
+    padding: var(--spacing-sm) var(--spacing-md);
+    background-color: var(--bg-primary);
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-md);
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.filter-btn:hover {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+/*
+    .active - 현재 선택된 필터
+    .active - Currently selected filter
+*/
+.filter-btn.active {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+}
+
+.filter-btn .count {
+    display: inline-block;
+    margin-left: var(--spacing-xs);
+    padding: 2px 8px;
+    background-color: rgba(0, 0, 0, 0.1);  /* 반투명 검정 배경 (Semi-transparent black) */
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.filter-btn.active .count {
+    background-color: rgba(255, 255, 255, 0.2);  /* 반투명 흰색 (Semi-transparent white) */
+}
+
+/*
+    ===========================
+    할일 목록
+    To-Do List
+    ===========================
+*/
+.todo-list {
+    min-height: 400px;              /* 최소 높이 보장 (Ensure minimum height) */
+    max-height: 600px;              /* 최대 높이 제한 (Limit maximum height) */
+    overflow-y: auto;               /* 세로 스크롤 (Vertical scroll) */
+    padding: var(--spacing-md);
+}
+
+/*
+    스크롤바 스타일 (Webkit 브라우저: Chrome, Safari, Edge)
+    Scrollbar styles (Webkit browsers: Chrome, Safari, Edge)
+*/
+.todo-list::-webkit-scrollbar {
+    width: 8px;                     /* 스크롤바 너비 (Scrollbar width) */
+}
+
+.todo-list::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+}
+
+.todo-list::-webkit-scrollbar-thumb {
+    background: var(--text-light);
+    border-radius: 4px;
+}
+
+.todo-list::-webkit-scrollbar-thumb:hover {
+    background: var(--text-secondary);
+}
+
+/*
+    개별 할일 항목
+    Individual To-Do Item
+*/
+.todo-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-sm);
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    transition: all var(--transition-fast);
+}
+
+.todo-item:hover {
+    border-color: var(--primary-color);
+    box-shadow: var(--shadow-sm);
+    transform: translateX(4px);     /* 오른쪽으로 살짝 이동 (Slight rightward movement) */
+}
+
+/*
+    완료된 할일 스타일
+    Completed To-Do Style
+*/
+.todo-item.completed {
+    background-color: var(--bg-secondary);
+    opacity: 0.7;                   /* 약간 투명하게 (Slightly transparent) */
+}
+
+.todo-item.completed .todo-text {
+    text-decoration: line-through;  /* 취소선 (Strikethrough) */
+    color: var(--text-secondary);
+}
+
+/*
+    필터링으로 숨겨진 항목
+    Hidden by filtering
+*/
+.todo-item.hidden {
+    display: none;                  /* 완전히 숨김 (Completely hidden) */
+}
+
+/*
+    체크박스 스타일
+    Checkbox Styles
+*/
+.todo-checkbox {
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    accent-color: var(--primary-color);  /* 체크박스 색상 (Checkbox color) */
+}
+
+/*
+    할일 텍스트
+    To-Do Text
+*/
+.todo-text {
+    flex: 1;                        /* 남은 공간 모두 차지 (Take remaining space) */
+    font-size: 1rem;
+    color: var(--text-primary);
+    word-break: break-word;         /* 긴 단어 줄바꿈 (Break long words) */
+}
+
+/*
+    수정 입력 필드 (인라인 편집 시)
+    Edit Input Field (During inline editing)
+*/
+.todo-edit-input {
+    flex: 1;
+    padding: var(--spacing-sm);
+    border: 2px solid var(--primary-color);
+    border-radius: var(--radius-sm);
+    font-size: 1rem;
+    outline: none;
+}
+
+/*
+    버튼 그룹
+    Button Group
+*/
+.todo-actions {
+    display: flex;
+    gap: var(--spacing-xs);
+}
+
+/*
+    아이콘 버튼 (수정, 삭제)
+    Icon Buttons (Edit, Delete)
+*/
+.btn-icon-action {
+    padding: var(--spacing-xs);
+    background-color: transparent;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: 1.25rem;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    display: flex;                  /* 이모지 중앙 정렬 (Center emoji) */
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-icon-action:hover {
+    background-color: var(--bg-hover);
+    transform: scale(1.1);          /* 살짝 확대 (Slight enlargement) */
+}
+
+.btn-edit {
+    color: var(--primary-color);
+}
+
+.btn-delete {
+    color: var(--danger-color);
+}
+
+/*
+    저장/취소 버튼 (편집 모드)
+    Save/Cancel Buttons (Edit mode)
+*/
+.btn-save {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    background-color: var(--secondary-color);
+    color: white;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.btn-save:hover {
+    background-color: #059669;
+    transform: translateY(-1px);
+}
+
+.btn-cancel {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    background-color: var(--text-light);
+    color: white;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.btn-cancel:hover {
+    background-color: var(--text-secondary);
+    transform: translateY(-1px);
+}
+
+/*
+    ===========================
+    빈 상태 메시지
+    Empty State Message
+    ===========================
+
+    할일이 없을 때 표시되는 메시지
+    Message displayed when there are no to-dos
+*/
+.empty-state {
+    text-align: center;
+    padding: var(--spacing-xl);
+    color: var(--text-secondary);
+}
+
+.empty-state-icon {
+    font-size: 4rem;
+    margin-bottom: var(--spacing-md);
+}
+
+.empty-state h3 {
+    font-size: 1.25rem;
+    margin-bottom: var(--spacing-sm);
+    color: var(--text-primary);
+}
+
+.empty-state p {
+    font-size: 0.875rem;
+}
+
+/*
+    ===========================
+    로딩 스피너
+    Loading Spinner
+    ===========================
+*/
+.loading {
+    display: flex;
+    flex-direction: column;         /* 세로 방향 배치 (Vertical layout) */
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-xl);
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid var(--border-color);
+    border-top-color: var(--primary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;  /* 1초마다 한 바퀴 회전 (One rotation per second) */
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);  /* 360도 회전 (360-degree rotation) */
+    }
+}
+
+.loading p {
+    margin-top: var(--spacing-md);
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+}
+
+/*
+    ===========================
+    푸터
+    Footer
+    ===========================
+*/
+.footer {
+    padding: var(--spacing-lg) var(--spacing-xl);
+    background-color: var(--bg-secondary);
+    border-top: 1px solid var(--border-color);
+    text-align: center;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+.footer p {
+    margin-bottom: var(--spacing-sm);
+}
+
+.tech-info {
+    font-size: 0.8rem;
+    line-height: 1.8;
+}
+
+/*
+    ===========================
+    반응형 디자인
+    Responsive Design
+    ===========================
+
+    @media 쿼리: 화면 크기에 따라 다른 스타일 적용
+    @media query: Apply different styles based on screen size
+
+    모바일 우선 접근법 (Mobile-first approach)
+*/
+
+/*
+    태블릿 (Tablet)
+    최대 너비 768px 이하일 때 적용
+    Applied when max width is 768px or less
+*/
+@media (max-width: 768px) {
+    body {
+        padding: var(--spacing-sm);
+    }
+
+    .header h1 {
+        font-size: 2rem;            /* 헤더 크기 축소 (Reduce header size) */
+    }
+
+    .add-todo-form {
+        flex-direction: column;     /* 세로 배치로 변경 (Change to vertical layout) */
+    }
+
+    .btn-add {
+        width: 100%;                /* 전체 너비 (Full width) */
+        justify-content: center;    /* 중앙 정렬 (Center alignment) */
+    }
+
+    .filter-container {
+        flex-direction: column;     /* 필터 버튼 세로 배치 (Vertical filter buttons) */
+    }
+
+    .todo-item {
+        flex-wrap: wrap;            /* 작은 화면에서 줄바꿈 허용 (Allow wrapping on small screens) */
+    }
+}
+
+/*
+    모바일 (Mobile)
+    최대 너비 480px 이하일 때 적용
+    Applied when max width is 480px or less
+*/
+@media (max-width: 480px) {
+    .header {
+        padding: var(--spacing-lg);
+    }
+
+    .header h1 {
+        font-size: 1.75rem;
+    }
+
+    .add-todo-container,
+    .filter-container,
+    .status-container {
+        padding: var(--spacing-md);
+    }
+
+    .todo-list {
+        max-height: 500px;          /* 모바일에서 높이 축소 (Reduce height on mobile) */
+    }
+
+    .todo-text {
+        font-size: 0.9rem;          /* 텍스트 크기 축소 (Reduce text size) */
+    }
+
+    .btn-icon-action {
+        font-size: 1.1rem;          /* 버튼 크기 축소 (Reduce button size) */
+    }
+}
+
+/*
+    ===========================
+    접근성 개선
+    Accessibility Improvements
+    ===========================
+
+    키보드 포커스가 보이도록 설정
+    Ensure keyboard focus is visible
+*/
+*:focus-visible {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
+/*
+    애니메이션 줄이기 설정 존중
+    Respect reduced motion preferences
+
+    prefers-reduced-motion: 사용자가 애니메이션을 줄이도록 설정한 경우
+    prefers-reduced-motion: When user has set preference to reduce animations
+*/
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}

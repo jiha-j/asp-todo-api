@@ -1,0 +1,407 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <!--
+    ==========================================
+    TodoApi.csproj - Project Configuration File
+    ==========================================
+
+    [한글 설명]
+    이 파일은 .NET 프로젝트의 설정 파일입니다.
+    Java Spring의 pom.xml (Maven) 또는 build.gradle (Gradle)과 동일한 역할을 합니다.
+    여기에는 다음을 정의합니다:
+    1. 프로젝트 타겟 프레임워크 (.NET 버전)
+    2. NuGet 패키지 의존성 (라이브러리)
+    3. 빌드 설정
+
+    [English Explanation]
+    This is the .NET project configuration file.
+    Same role as pom.xml (Maven) or build.gradle (Gradle) in Java Spring.
+    Defines:
+    1. Project target framework (.NET version)
+    2. NuGet package dependencies (libraries)
+    3. Build settings
+  -->
+
+  <!-- ==========================================
+       PropertyGroup - Project Properties
+       ==========================================
+
+       [한글] 프로젝트의 기본 속성을 정의합니다.
+       [English] Defines basic project properties.
+  -->
+  <PropertyGroup>
+    <!--
+      [한글] TargetFramework: 사용할 .NET 버전을 지정합니다.
+             net9.0 = .NET 9.0 (2024년 11월 릴리스, 최신 버전)
+             다른 옵션:
+             - net8.0 = .NET 8.0 (LTS)
+             - net7.0 = .NET 7.0
+             - net6.0 = .NET 6.0 (LTS)
+
+      [English] TargetFramework: Specifies .NET version to use.
+                net9.0 = .NET 9.0 (Released Nov 2024, latest version)
+                Other options:
+                - net8.0 = .NET 8.0 (LTS)
+                - net7.0 = .NET 7.0
+                - net6.0 = .NET 6.0 (LTS)
+    -->
+    <TargetFramework>net9.0</TargetFramework>
+
+    <!--
+      [한글] Nullable: null 참조 유형 검사를 활성화합니다.
+             enable = 컴파일러가 null 관련 경고를 표시합니다.
+             C# 8.0+의 안전성 기능입니다.
+
+      [English] Nullable: Enable nullable reference type checking.
+                enable = Compiler shows null-related warnings.
+                Safety feature of C# 8.0+.
+    -->
+    <Nullable>enable</Nullable>
+
+    <!--
+      [한글] ImplicitUsings: 자주 사용하는 네임스페이스를 자동으로 포함합니다.
+             enable = using 문을 직접 작성하지 않아도 됩니다.
+
+             자동 포함되는 네임스페이스:
+             - System
+             - System.Collections.Generic
+             - System.Linq
+             - System.Threading.Tasks
+             - Microsoft.AspNetCore.Builder
+             - Microsoft.AspNetCore.Hosting
+             - Microsoft.Extensions.DependencyInjection
+             - Microsoft.Extensions.Hosting
+
+      [English] ImplicitUsings: Automatically include frequently used namespaces.
+                enable = Don't need to write using statements manually.
+
+                Auto-included namespaces:
+                - System
+                - System.Collections.Generic
+                - System.Linq
+                - System.Threading.Tasks
+                - Microsoft.AspNetCore.Builder
+                - Microsoft.AspNetCore.Hosting
+                - Microsoft.Extensions.DependencyInjection
+                - Microsoft.Extensions.Hosting
+    -->
+    <ImplicitUsings>enable</ImplicitUsings>
+
+    <!--
+      [한글] RootNamespace: 프로젝트의 기본 네임스페이스입니다.
+             모든 클래스는 이 네임스페이스 아래에 생성됩니다.
+
+      [English] RootNamespace: Default namespace of project.
+                All classes are created under this namespace.
+    -->
+    <RootNamespace>TodoApi</RootNamespace>
+  </PropertyGroup>
+
+  <!-- ==========================================
+       ItemGroup - Package References (NuGet 패키지)
+       ==========================================
+
+       [한글] 프로젝트에서 사용할 외부 라이브러리(NuGet 패키지)를 정의합니다.
+              Java의 Maven dependency 또는 Gradle implementation과 동일합니다.
+
+       [English] Defines external libraries (NuGet packages) to use in project.
+                 Same as Maven dependency or Gradle implementation in Java.
+
+       Java Maven 비교:
+       <dependency>
+         <groupId>org.springframework.boot</groupId>
+         <artifactId>spring-boot-starter-web</artifactId>
+         <version>3.1.0</version>
+       </dependency>
+  -->
+  <ItemGroup>
+    <!--
+      ==========================================
+      Entity Framework Core - In-Memory Database
+      ==========================================
+
+      [한글] In-Memory 데이터베이스 제공자입니다.
+             학습 및 테스트 용도로 사용합니다.
+             애플리케이션 재시작 시 데이터가 초기화됩니다.
+
+             실제 프로젝트에서는 SQLite, SQL Server, PostgreSQL 등을 사용하세요.
+
+      [English] In-Memory database provider.
+                Used for learning and testing purposes.
+                Data resets on application restart.
+
+                In real projects, use SQLite, SQL Server, PostgreSQL, etc.
+    -->
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="8.0.0" />
+
+    <!--
+      ==========================================
+      Entity Framework Core - SQLite (Optional)
+      ==========================================
+
+      [한글] SQLite 데이터베이스 제공자입니다.
+             파일 기반 데이터베이스로, 설치가 간단합니다.
+             중소규모 프로젝트에 적합합니다.
+
+             사용 방법:
+             1. 이 패키지의 주석을 해제합니다.
+             2. Program.cs에서 UseInMemoryDatabase를 UseSqlite로 변경합니다.
+             3. appsettings.json에 연결 문자열을 추가합니다.
+
+      [English] SQLite database provider.
+                File-based database, easy to set up.
+                Suitable for small to medium projects.
+
+                How to use:
+                1. Uncomment this package.
+                2. Change UseInMemoryDatabase to UseSqlite in Program.cs.
+                3. Add connection string to appsettings.json.
+    -->
+    <!-- <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.0" /> -->
+
+    <!--
+      ==========================================
+      Entity Framework Core - SQL Server (Optional)
+      ==========================================
+
+      [한글] SQL Server 데이터베이스 제공자입니다.
+             엔터프라이즈급 데이터베이스로, 높은 성능과 확장성을 제공합니다.
+             대규모 프로젝트에 적합합니다.
+
+      [English] SQL Server database provider.
+                Enterprise-grade database with high performance and scalability.
+                Suitable for large projects.
+    -->
+    <!-- <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.0" /> -->
+
+    <!--
+      ==========================================
+      Entity Framework Core - Tools
+      ==========================================
+
+      [한글] Entity Framework Core 도구를 제공합니다.
+             마이그레이션 생성 및 관리에 사용됩니다.
+
+             사용 명령어:
+             - dotnet ef migrations add InitialCreate
+             - dotnet ef database update
+             - dotnet ef migrations remove
+             - dotnet ef database drop
+
+      [English] Provides Entity Framework Core tools.
+                Used for creating and managing migrations.
+
+                Commands:
+                - dotnet ef migrations add InitialCreate
+                - dotnet ef database update
+                - dotnet ef migrations remove
+                - dotnet ef database drop
+    -->
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+
+    <!--
+      ==========================================
+      Entity Framework Core - Design
+      ==========================================
+
+      [한글] EF Core 디자인 시간 도구를 제공합니다.
+             마이그레이션 생성 시 필요합니다.
+
+      [English] Provides EF Core design-time tools.
+                Required for creating migrations.
+    -->
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+
+    <!--
+      ==========================================
+      Swagger/OpenAPI Support
+      ==========================================
+
+      [한글] Swagger/OpenAPI 문서화 도구입니다.
+             API 엔드포인트를 자동으로 문서화하고 테스트 UI를 제공합니다.
+
+             접속 URL: http://localhost:5000/swagger
+
+             Java Spring의 SpringDoc OpenAPI와 동일한 역할입니다.
+
+      [English] Swagger/OpenAPI documentation tool.
+                Automatically documents API endpoints and provides testing UI.
+
+                Access URL: http://localhost:5000/swagger
+
+                Same role as SpringDoc OpenAPI in Java Spring.
+    -->
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+
+    <!--
+      ==========================================
+      Additional Packages (Optional)
+      ==========================================
+
+      [한글] 필요에 따라 추가할 수 있는 패키지들:
+      [English] Packages that can be added as needed:
+    -->
+
+    <!--
+      JWT Authentication (JWT 인증)
+
+      [한글] JWT 토큰 기반 인증을 구현할 때 사용합니다.
+      [English] Used for implementing JWT token-based authentication.
+    -->
+    <!-- <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.0" /> -->
+
+    <!--
+      Newtonsoft.Json (JSON 직렬화)
+
+      [한글] JSON 처리를 위한 라이브러리입니다.
+             .NET의 기본 System.Text.Json 대신 사용할 수 있습니다.
+      [English] Library for JSON processing.
+                Can be used instead of .NET's default System.Text.Json.
+    -->
+    <!-- <PackageReference Include="Newtonsoft.Json" Version="13.0.3" /> -->
+
+    <!--
+      AutoMapper (객체 매핑)
+
+      [한글] 객체 간 자동 매핑을 위한 라이브러리입니다.
+             DTO와 Entity 간 변환에 유용합니다.
+      [English] Library for automatic object mapping.
+                Useful for converting between DTO and Entity.
+    -->
+    <!-- <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" /> -->
+
+    <!--
+      FluentValidation (유효성 검사)
+
+      [한글] 강력한 유효성 검사 라이브러리입니다.
+             Data Annotations보다 복잡한 검증 로직에 사용합니다.
+      [English] Powerful validation library.
+                Used for more complex validation logic than Data Annotations.
+    -->
+    <!-- <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" /> -->
+
+    <!--
+      Serilog (로깅)
+
+      [한글] 구조화된 로깅을 위한 라이브러리입니다.
+             더 강력한 로깅 기능을 제공합니다.
+      [English] Library for structured logging.
+                Provides more powerful logging features.
+    -->
+    <!-- <PackageReference Include="Serilog.AspNetCore" Version="8.0.0" /> -->
+  </ItemGroup>
+
+  <!--
+    ==========================================
+    Building and Running the Project
+    ==========================================
+
+    [한글] 프로젝트 빌드 및 실행 명령어:
+    (참고: 명령어에서 "- -"는 실제로는 붙여서 사용합니다)
+
+    1. 패키지 복원 (Package Restore):
+       dotnet restore
+
+    2. 프로젝트 빌드 (Build):
+       dotnet build
+
+    3. 애플리케이션 실행 (Run):
+       dotnet run
+
+    4. 개발 모드 실행 (Development mode with auto-reload):
+       dotnet watch run
+
+    5. 릴리스 빌드 (Release build):
+       dotnet build - -configuration Release
+
+    6. 게시 (Publish for deployment):
+       dotnet publish - -configuration Release - -output ./publish
+
+    [English] Project build and run commands:
+    (Note: In commands, "- -" should be used as a single double-dash with no space)
+
+    1. Package Restore:
+       dotnet restore
+
+    2. Build:
+       dotnet build
+
+    3. Run:
+       dotnet run
+
+    4. Development mode with auto-reload:
+       dotnet watch run
+
+    5. Release build:
+       dotnet build - -configuration Release
+
+    6. Publish for deployment:
+       dotnet publish - -configuration Release - -output ./publish
+  -->
+
+  <!--
+    ==========================================
+    Entity Framework Core Commands
+    ==========================================
+
+    [한글] EF Core 마이그레이션 명령어:
+
+    1. 마이그레이션 생성:
+       dotnet ef migrations add InitialCreate
+
+    2. 데이터베이스 업데이트:
+       dotnet ef database update
+
+    3. 마이그레이션 제거:
+       dotnet ef migrations remove
+
+    4. 데이터베이스 삭제:
+       dotnet ef database drop
+
+    5. 마이그레이션 스크립트 생성:
+       dotnet ef migrations script
+
+    [English] EF Core migration commands:
+
+    1. Create migration:
+       dotnet ef migrations add InitialCreate
+
+    2. Update database:
+       dotnet ef database update
+
+    3. Remove migration:
+       dotnet ef migrations remove
+
+    4. Drop database:
+       dotnet ef database drop
+
+    5. Generate migration script:
+       dotnet ef migrations script
+  -->
+
+  <!--
+    ==========================================
+    Java Spring vs ASP.NET Core Dependencies
+    ==========================================
+
+    Java Spring (Maven)                      ASP.NET Core (NuGet)
+    =======================================================================
+    spring-boot-starter-web               → (Included in SDK)
+    spring-boot-starter-data-jpa          → EntityFrameworkCore.InMemory
+    com.h2database:h2                     → EntityFrameworkCore.InMemory
+    org.sqlite:sqlite-jdbc                → EntityFrameworkCore.Sqlite
+    mssql-jdbc                            → EntityFrameworkCore.SqlServer
+    springdoc-openapi-starter-webmvc-ui   → Swashbuckle.AspNetCore
+    spring-boot-starter-validation        → (Built-in DataAnnotations)
+    spring-boot-starter-security          → AspNetCore.Authentication.JwtBearer
+    lombok                                → (C# has built-in properties)
+    mapstruct                             → AutoMapper
+  -->
+
+</Project>
