@@ -101,8 +101,17 @@ builder.Services.AddControllers();
 //     @Bean
 //     public DataSource dataSource() { ... }
 // }
+
+// ==========================================
+// SQL Server 연결 설정
+// ==========================================
+// [한글] appsettings.json에서 연결 문자열을 읽어와 SQL Server를 사용합니다.
+// [English] Read connection string from appsettings.json and use SQL Server.
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+    ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+
 builder.Services.AddDbContext<TodoContext>(options =>
-    options.UseInMemoryDatabase("TodoDb"));
+    options.UseSqlServer(connectionString));
 
 // ==========================================
 // Alternative: SQLite Configuration (대안: SQLite 설정)
@@ -254,24 +263,26 @@ using (var scope = app.Services.CreateScope())
     var services = scope.ServiceProvider;
     var context = services.GetRequiredService<TodoContext>();
 
-    // [한글] 데이터베이스가 생성되었는지 확인합니다.
-    //       In-Memory DB는 자동 생성, SQLite는 파일 생성
-    // [English] Ensure database is created.
-    //           In-Memory DB: auto-created, SQLite: creates file
-    context.Database.EnsureCreated();
+    // [한글] 마이그레이션을 실행하여 데이터베이스를 업데이트합니다.
+    //       모든 대기 중인 마이그레이션이 자동으로 적용됩니다.
+    // [English] Run migrations to update the database.
+    //           All pending migrations are automatically applied.
+    await context.Database.MigrateAsync();
 
     // ==========================================
-    // Alternative: Run Migrations (대안: 마이그레이션 실행)
+    // Migration Commands (마이그레이션 명령어)
     // ==========================================
     //
-    // [한글] 실제 데이터베이스 사용 시 마이그레이션을 실행합니다:
-    // [English] When using real database, run migrations:
+    // [한글] 마이그레이션 관리 명령어:
+    // [English] Migration management commands:
     //
-    // await context.Database.MigrateAsync();
+    // 마이그레이션 생성: dotnet ef migrations add MigrationName
+    // 데이터베이스 업데이트: dotnet ef database update
+    // 마이그레이션 제거: dotnet ef migrations remove
+    // 데이터베이스 삭제: dotnet ef database drop
     //
-    // 마이그레이션 생성 명령어:
-    // dotnet ef migrations add InitialCreate
-    // dotnet ef database update
+    // Note: EnsureCreated()는 migration과 함께 사용하면 안 됩니다.
+    //       Use Migrate() when using migrations, EnsureCreated() for quick prototyping only.
 }
 
 // ==========================================
@@ -471,11 +482,11 @@ app.Run();
 // 3. Development mode (auto-restart): dotnet watch run
 //
 // 테스트 URL (Test URLs):
-// - GET all todos: http://localhost:5000/api/todo
-// - GET by id: http://localhost:5000/api/todo/1
-// - POST create: http://localhost:5000/api/todo (with JSON body)
-// - PUT update: http://localhost:5000/api/todo/1 (with JSON body)
-// - DELETE: http://localhost:5000/api/todo/1
+// - GET all todos: http://localhost:5000/api/todos
+// - GET by id: http://localhost:5000/api/todos/1
+// - POST create: http://localhost:5000/api/todos (with JSON body)
+// - PUT update: http://localhost:5000/api/todos/1 (with JSON body)
+// - DELETE: http://localhost:5000/api/todos/1
 // - Swagger UI: http://localhost:5000/swagger
 
 // ==========================================

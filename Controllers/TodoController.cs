@@ -37,25 +37,23 @@ namespace TodoApi.Controllers
     // Java Spring 비교:
     // [ApiController] + [Route] → @RestController + @RequestMapping
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/todos")]
     public class TodoController : ControllerBase
     {
         // ==========================================
         // Route Explanation (라우팅 설명)
         // ==========================================
         //
-        // [한글] [Route("api/[controller]")]는 이 Controller의 기본 경로를 설정합니다.
-        //       [controller]는 클래스 이름에서 'Controller'를 제외한 부분으로 대체됩니다.
-        //       TodoController → "api/todo"
-        //       따라서 모든 엔드포인트는 "api/todo" 경로로 시작합니다.
+        // [한글] [Route("api/todos")]는 이 Controller의 기본 경로를 설정합니다.
+        //       모든 엔드포인트는 "api/todos" 경로로 시작합니다.
+        //       RESTful 관례에 따라 복수형(todos)을 사용합니다.
         //
-        // [English] [Route("api/[controller]")] sets base path for this Controller.
-        //           [controller] is replaced by class name without 'Controller'.
-        //           TodoController → "api/todo"
-        //           So all endpoints start with "api/todo" path.
+        // [English] [Route("api/todos")] sets base path for this Controller.
+        //           All endpoints start with "api/todos" path.
+        //           Use plural form (todos) according to RESTful convention.
         //
         // Java Spring 비교:
-        // @RequestMapping("/api/todo")
+        // @RequestMapping("/api/todos")
 
         // ==========================================
         // Dependency Injection
@@ -127,7 +125,7 @@ namespace TodoApi.Controllers
         //           Extracts ID from route path.
         //
         // 예시 요청 (Example Request):
-        // GET http://localhost:5000/api/todo/1
+        // GET http://localhost:5000/api/todos/1
         //
         // Java Spring 비교:
         // @GetMapping("/{id}")
@@ -177,8 +175,8 @@ namespace TodoApi.Controllers
         //           Example of additional business logic.
         //
         // 예시 요청 (Example Requests):
-        // GET http://localhost:5000/api/todo/status/true   → 완료된 항목
-        // GET http://localhost:5000/api/todo/status/false  → 미완료 항목
+        // GET http://localhost:5000/api/todos/status/true   → 완료된 항목
+        // GET http://localhost:5000/api/todos/status/false  → 미완료 항목
         [HttpGet("status/{isCompleted}")]
         public async Task<ActionResult<IEnumerable<TodoItem>>> GetTodosByStatus(bool isCompleted)
         {
@@ -196,7 +194,7 @@ namespace TodoApi.Controllers
         //           Handles HTTP POST request and returns 201 Created response.
         //
         // 예시 요청 (Example Request):
-        // POST http://localhost:5000/api/todo
+        // POST http://localhost:5000/api/todos
         // Content-Type: application/json
         // {
         //   "title": "Learn ASP.NET Core",
@@ -256,7 +254,7 @@ namespace TodoApi.Controllers
             //       3. createdTodo: 응답 본문에 포함할 데이터
             //
             //       Location 헤더에 생성된 리소스의 URL이 포함됩니다:
-            //       Location: http://localhost:5000/api/todo/1
+            //       Location: http://localhost:5000/api/todos/1
             //
             // [English] CreatedAtAction() returns 201 Created response.
             //           Three parameters:
@@ -265,15 +263,15 @@ namespace TodoApi.Controllers
             //           3. createdTodo: Data to include in response body
             //
             //           Location header includes URL of created resource:
-            //           Location: http://localhost:5000/api/todo/1
+            //           Location: http://localhost:5000/api/todos/1
             //
             // HTTP Response:
             // Status: 201 Created
-            // Location: http://localhost:5000/api/todo/1
+            // Location: http://localhost:5000/api/todos/1
             // Body: {"id":1,"title":"...","description":"...","isCompleted":false,"createdAt":"..."}
             //
             // Java Spring 비교:
-            // return ResponseEntity.created(URI.create("/api/todo/" + id)).body(createdTodo);
+            // return ResponseEntity.created(URI.create("/api/todos/" + id)).body(createdTodo);
             return CreatedAtAction(
                 nameof(GetTodoById),
                 new { id = createdTodo.Id },
@@ -291,7 +289,7 @@ namespace TodoApi.Controllers
         //           Handles HTTP PUT request and returns 204 No Content response.
         //
         // 예시 요청 (Example Request):
-        // PUT http://localhost:5000/api/todo/1
+        // PUT http://localhost:5000/api/todos/1
         // Content-Type: application/json
         // {
         //   "title": "Learn ASP.NET Core - Updated",
@@ -376,7 +374,7 @@ namespace TodoApi.Controllers
         //           Handles HTTP DELETE request and returns 204 No Content response.
         //
         // 예시 요청 (Example Request):
-        // DELETE http://localhost:5000/api/todo/1
+        // DELETE http://localhost:5000/api/todos/1
         //
         // Java Spring 비교:
         // @DeleteMapping("/{id}")

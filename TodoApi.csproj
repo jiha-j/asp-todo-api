@@ -157,7 +157,7 @@
                 2. Change UseInMemoryDatabase to UseSqlite in Program.cs.
                 3. Add connection string to appsettings.json.
     -->
-    <!-- <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.0" /> -->
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.0" />
 
     <!--
       ==========================================
@@ -172,7 +172,7 @@
                 Enterprise-grade database with high performance and scalability.
                 Suitable for large projects.
     -->
-    <!-- <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.0" /> -->
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.0" />
 
     <!--
       ==========================================
