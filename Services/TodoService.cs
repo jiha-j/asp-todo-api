@@ -138,7 +138,9 @@ namespace TodoApi.Services
             // [English] Business logic: Set creation time to current time.
             //           Ignores CreatedAt value from client and uses server time.
             //           This prevents client-side time manipulation.
-            todoItem.CreatedAt = DateTime.UtcNow;
+            var now = DateTime.UtcNow;
+            todoItem.CreatedAt = now;
+            todoItem.UpdatedAt = now; // 생성 시 UpdatedAt도 같은 값으로 설정
 
             // ==========================================
             // Add to DbSet (Not yet saved to database)
@@ -216,6 +218,15 @@ namespace TodoApi.Services
             existingTodo.Title = todoItem.Title;
             existingTodo.Description = todoItem.Description;
             existingTodo.IsCompleted = todoItem.IsCompleted;
+
+            // 새로 추가된 필드들 업데이트 / Update newly added fields
+            existingTodo.DueDate = todoItem.DueDate;
+            existingTodo.Priority = todoItem.Priority;
+            existingTodo.Category = todoItem.Category;
+            existingTodo.Tags = todoItem.Tags;
+
+            // 수정 시간 자동 업데이트 / Auto-update modification time
+            existingTodo.UpdatedAt = DateTime.UtcNow;
 
             // ==========================================
             // Alternative Update Method (Commented)

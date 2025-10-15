@@ -263,11 +263,28 @@ using (var scope = app.Services.CreateScope())
     var services = scope.ServiceProvider;
     var context = services.GetRequiredService<TodoContext>();
 
-    // [한글] 마이그레이션을 실행하여 데이터베이스를 업데이트합니다.
-    //       모든 대기 중인 마이그레이션이 자동으로 적용됩니다.
-    // [English] Run migrations to update the database.
-    //           All pending migrations are automatically applied.
-    await context.Database.MigrateAsync();
+    // [한글] 개발 환경에서만 마이그레이션을 자동 실행합니다.
+    //       프로덕션/IIS 환경에서는 데이터베이스가 이미 생성되어 있어야 합니다.
+    // [English] Run migrations automatically only in development environment.
+    //           In production/IIS, database must already exist.
+    if (app.Environment.IsDevelopment())
+    {
+        await context.Database.MigrateAsync();
+    }
+    else
+    {
+        // [한글] 프로덕션에서는 데이터베이스 존재 여부만 확인합니다.
+        // [English] In production, only check if database can be connected.
+        try
+        {
+            await context.Database.CanConnectAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Database connection error: {ex.Message}");
+            Console.WriteLine("Please ensure database is created and accessible.");
+        }
+    }
 
     // ==========================================
     // Migration Commands (마이그레이션 명령어)

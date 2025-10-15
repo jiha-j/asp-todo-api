@@ -355,6 +355,130 @@ body {
 
 /*
     ===========================
+    검색 및 필터 컨테이너
+    Search & Filter Container
+    ===========================
+*/
+.search-filter-container {
+    display: flex;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md) var(--spacing-xl);
+    background-color: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-color);
+    align-items: stretch;           /* 자식 요소 높이를 동일하게 */
+}
+
+/* 우선순위 필터 (30% 너비) */
+.priority-filter {
+    flex: 0 0 30%;                  /* 30% 고정 너비 */
+    display: flex;
+}
+
+/* 우선순위 선택 박스 */
+.priority-select {
+    width: 100%;
+    padding: var(--spacing-md);
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-md);
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    background-color: var(--bg-primary);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    outline: none;
+}
+
+.priority-select:hover {
+    border-color: var(--primary-color);
+    background-color: var(--bg-hover);
+}
+
+.priority-select:focus {
+    border-color: var(--border-focus);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+/* 검색 박스 (70% 너비) */
+.search-box {
+    flex: 1;                        /* 나머지 공간 모두 차지 (70%) */
+    display: flex;
+    gap: var(--spacing-sm);
+    align-items: stretch;
+}
+
+/* 검색 입력 필드 */
+.search-input {
+    flex: 1;
+    padding: var(--spacing-md);
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-md);
+    font-size: 1rem;
+    transition: border-color var(--transition-fast);
+    outline: none;
+}
+
+.search-input:focus {
+    border-color: var(--border-focus);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+.search-input:hover {
+    border-color: var(--text-light);
+}
+
+/* 검색 버튼 */
+.btn-search {
+    padding: var(--spacing-md) var(--spacing-lg);
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: var(--radius-md);
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    white-space: nowrap;
+}
+
+.btn-search:hover {
+    background-color: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.btn-search:active {
+    transform: translateY(0);
+}
+
+/* 클리어 버튼 */
+.btn-clear {
+    padding: var(--spacing-md);
+    background-color: var(--text-light);
+    color: white;
+    border: none;
+    border-radius: var(--radius-md);
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    width: 44px;                    /* 정사각형에 가깝게 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-clear:hover {
+    background-color: var(--danger-color);
+    transform: scale(1.05);
+}
+
+.btn-clear:active {
+    transform: scale(0.95);
+}
+
+/*
+    ===========================
     필터 버튼
     Filter Buttons
     ===========================
@@ -721,6 +845,20 @@ body {
         justify-content: center;    /* 중앙 정렬 (Center alignment) */
     }
 
+    /* 검색/필터 컨테이너 - 태블릿에서는 세로 배치 */
+    .search-filter-container {
+        flex-direction: column;
+        gap: var(--spacing-sm);
+    }
+
+    .priority-filter {
+        flex: 1 1 auto;             /* 너비 제한 해제 */
+    }
+
+    .search-box {
+        flex: 1 1 auto;
+    }
+
     .filter-container {
         flex-direction: column;     /* 필터 버튼 세로 배치 (Vertical filter buttons) */
     }
@@ -746,8 +884,25 @@ body {
 
     .add-todo-container,
     .filter-container,
-    .status-container {
+    .status-container,
+    .search-filter-container {
         padding: var(--spacing-md);
+    }
+
+    /* 모바일에서 검색 버튼 텍스트 축약 */
+    .btn-search {
+        padding: var(--spacing-md);
+        font-size: 0.85rem;
+    }
+
+    /* 모바일에서 우선순위 선택 박스 폰트 크기 축소 */
+    .priority-select {
+        font-size: 0.85rem;
+    }
+
+    /* 모바일에서 검색 입력 필드 폰트 크기 축소 */
+    .search-input {
+        font-size: 0.9rem;
     }
 
     .todo-list {
@@ -790,4 +945,116 @@ body {
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
     }
+}
+
+/*
+    ===========================
+    확장된 Todo 항목 스타일
+    Extended To-Do Item Styles
+    ===========================
+*/
+
+/* 링크로 사용되는 버튼 스타일 */
+.btn-add {
+    text-decoration: none;
+}
+
+/* Todo 항목 클릭 가능하게 */
+.todo-item {
+    cursor: pointer;
+    justify-content: space-between;
+}
+
+/* Todo 내용 영역 */
+.todo-content {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--spacing-md);
+    flex: 1;
+}
+
+/* Todo 정보 영역 */
+.todo-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+}
+
+/* Todo 메타 정보 (우선순위, 카테고리, 마감일) */
+.todo-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-xs);
+    align-items: center;
+}
+
+/* 우선순위 뱃지 */
+.priority-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.priority-low {
+    background-color: #e3f2fd;
+    color: #1976d2;
+}
+
+.priority-normal {
+    background-color: #f3e5f5;
+    color: #7b1fa2;
+}
+
+.priority-high {
+    background-color: #fff3e0;
+    color: #f57c00;
+}
+
+.priority-urgent {
+    background-color: #ffebee;
+    color: #c62828;
+}
+
+/* 카테고리 뱃지 */
+.todo-category {
+    display: inline-block;
+    padding: 2px 8px;
+    background-color: #e0e0e0;
+    color: #333;
+    border-radius: 12px;
+    font-size: 0.75rem;
+}
+
+/* 마감일 표시 */
+.todo-due-date {
+    display: inline-block;
+    padding: 2px 8px;
+    background-color: #e8f5e9;
+    color: #2e7d32;
+    border-radius: 12px;
+    font-size: 0.75rem;
+}
+
+.todo-due-date.overdue {
+    background-color: #ffebee;
+    color: #c62828;
+    font-weight: 600;
+}
+
+/* 보기 버튼 */
+.btn-view {
+    color: #666;
+}
+
+.btn-view:hover {
+    color: var(--primary-color);
+}
+
+/* 상세 페이지 및 폼 페이지 스타일링을 위한 추가 조정 */
+a.back-button,
+a.btn-add {
+    text-decoration: none;
 }

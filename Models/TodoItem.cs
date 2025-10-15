@@ -85,6 +85,68 @@ namespace TodoApi.Models
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         // ==========================================
+        // UpdatedAt Timestamp
+        // ==========================================
+        // [한글] 할 일이 마지막으로 수정된 시간을 저장합니다.
+        //       생성 시에는 CreatedAt과 같은 값을 가집니다.
+        //
+        // [English] Stores the last modification timestamp of the to-do item.
+        //           Initially equals CreatedAt when first created.
+        public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+
+        // ==========================================
+        // DueDate - Deadline
+        // ==========================================
+        // [한글] 할 일의 마감기한입니다.
+        //       Nullable 타입으로 선택 사항입니다.
+        //       마감기한이 없는 할 일도 있을 수 있습니다.
+        //
+        // [English] Deadline for the to-do item.
+        //           Nullable type makes it optional.
+        //           Some to-dos may not have a deadline.
+        public DateTime? DueDate { get; set; }
+
+        // ==========================================
+        // Priority - Task Priority
+        // ==========================================
+        // [한글] 할 일의 우선순위입니다.
+        //       기본값은 Normal(보통)입니다.
+        //       TodoPriority Enum을 사용합니다.
+        //
+        // [English] Priority of the to-do item.
+        //           Defaults to Normal.
+        //           Uses TodoPriority enum.
+        public TodoPriority Priority { get; set; } = TodoPriority.Normal;
+
+        // ==========================================
+        // Category - Task Category
+        // ==========================================
+        // [한글] 할 일의 카테고리입니다.
+        //       예: "업무", "개인", "쇼핑", "공부" 등
+        //       Nullable 타입으로 선택 사항입니다.
+        //
+        // [English] Category of the to-do item.
+        //           Examples: "Work", "Personal", "Shopping", "Study"
+        //           Nullable type makes it optional.
+        [StringLength(50, ErrorMessage = "Category cannot exceed 50 characters / 카테고리는 50자를 초과할 수 없습니다")]
+        public string? Category { get; set; }
+
+        // ==========================================
+        // Tags - Task Tags (JSON Array)
+        // ==========================================
+        // [한글] 할 일에 붙일 수 있는 태그들입니다.
+        //       JSON 형식의 문자열로 저장됩니다.
+        //       예: ["중요", "긴급", "프로젝트A"]
+        //       Nullable 타입으로 선택 사항입니다.
+        //
+        // [English] Tags that can be attached to the to-do item.
+        //           Stored as JSON string.
+        //           Example: ["important", "urgent", "projectA"]
+        //           Nullable type makes it optional.
+        [StringLength(500, ErrorMessage = "Tags cannot exceed 500 characters / 태그는 500자를 초과할 수 없습니다")]
+        public string? Tags { get; set; }
+
+        // ==========================================
         // Property Explanation (속성 설명)
         // ==========================================
         //

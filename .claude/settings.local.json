@@ -4,7 +4,22 @@
       "Bash(sqlcmd -L)",
       "Bash(dotnet build:*)",
       "Bash(dotnet run:*)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "Bash(dir)",
+      "Bash(dotnet publish:*)",
+      "Bash(dir publish:*)",
+      "Bash(dotnet --list-runtimes)",
+      "Bash(icacls:*)",
+      "Bash(mkdir:*)",
+      "Bash(Get-Service -Name W3SVC)",
+      "Bash(Select-Object Name, Status, StartType)",
+      "Bash(dir \"C:\\claude\\asp_practice_1\\publish\")",
+      "Bash(Select-Object -First 20)",
+      "Bash(powershell:*)",
+      "Read(//c/Windows/System32/inetsrv/**)",
+      "Bash(./appcmd.exe list:*)",
+      "Bash(/dev/null)",
+      "Bash(sqlcmd:*)"
     ],
     "deny": [],
     "ask": []

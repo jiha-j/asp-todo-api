@@ -91,8 +91,22 @@ document.addEventListener('DOMContentLoaded', function() {
     */
 
     checkApiStatus();      // API 연결 확인 (Check API connection)
-    setupEventListeners(); // 이벤트 등록 (Register events)
     loadTodos();          // 데이터 로드 (Load data)
+
+    /*
+        검색 입력 필드에 Enter 키 이벤트 등록
+        Register Enter key event for search input field
+    */
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+        searchInput.addEventListener('keypress', function(event) {
+            // Enter 키를 누르면 검색 실행 (Execute search on Enter key)
+            if (event.key === 'Enter') {
+                event.preventDefault();  // 폼 제출 방지 (Prevent form submission)
+                applyFilters();
+            }
+        });
+    }
 });
 
 /*
@@ -172,47 +186,6 @@ async function checkApiStatus() {
     }
 }
 
-/*
-    ===========================
-    이벤트 리스너 설정
-    Setup Event Listeners
-    ===========================
-
-    이벤트 리스너: 사용자 동작(클릭, 입력 등)을 감지하는 함수
-    Event Listener: Function that detects user actions (click, input, etc.)
-*/
-function setupEventListeners() {
-    console.log('🎧 이벤트 리스너 등록 중... (Registering event listeners...)');
-
-    /*
-        폼 제출 이벤트 (Form submit event)
-
-        preventDefault(): 기본 동작 방지
-        - 폼의 기본 동작은 페이지 새로고침
-        - Form's default action is page refresh
-        - 우리는 JavaScript로 처리하므로 새로고침 방지
-        - We handle with JavaScript, so prevent refresh
-    */
-    const addTodoForm = document.getElementById('addTodoForm');
-    addTodoForm.addEventListener('submit', async function(event) {
-        event.preventDefault();  // 페이지 새로고침 방지 (Prevent page refresh)
-
-        const input = document.getElementById('todoInput');
-        const title = input.value.trim();  // trim(): 앞뒤 공백 제거 (Remove leading/trailing spaces)
-
-        /*
-            입력 검증 (Input validation)
-            빈 문자열은 추가하지 않음 (Don't add empty strings)
-        */
-        if (title) {
-            await addTodo(title);
-            input.value = '';  // 입력 필드 초기화 (Clear input field)
-            input.focus();     // 포커스를 입력 필드로 이동 (Move focus to input field)
-        }
-    });
-
-    console.log('✅ 이벤트 리스너 등록 완료 (Event listeners registered)');
-}
 
 /*
     ===========================
@@ -225,17 +198,41 @@ function setupEventListeners() {
 
     HTTP 요청 예시 (HTTP Request Example):
     GET http://localhost:5000/api/todos
+    GET http://localhost:5000/api/todos?priority=2&search=회의
 
     응답 예시 (Response Example):
     [
         { "id": 1, "title": "공부하기", "isCompleted": false },
         { "id": 2, "title": "운동하기", "isCompleted": true }
     ]
+
+    파라미터 (Parameters):
+    - priority: 우선순위 필터 (0=낮음, 1=보통, 2=높음, 3=긴급)
+    - search: 제목 검색어
 */
-async function loadTodos() {
+async function loadTodos(filters = {}) {
     console.log('📥 할일 목록 로드 중... (Loading to-do list...)');
 
     try {
+        /*
+            쿼리 파라미터 생성 (Build query parameters)
+            URLSearchParams: URL 쿼리 문자열을 쉽게 만들어주는 API
+        */
+        const params = new URLSearchParams();
+
+        if (filters.priority !== undefined && filters.priority !== null && filters.priority !== '') {
+            params.append('priority', filters.priority);
+        }
+
+        if (filters.search && filters.search.trim() !== '') {
+            params.append('search', filters.search.trim());
+        }
+
+        const queryString = params.toString();
+        const url = queryString ? `${API_BASE_URL}?${queryString}` : API_BASE_URL;
+
+        console.log(`🔍 API 요청 URL: ${url}`);
+
         /*
             fetch() 호출 과정 (fetch() call process):
             1. HTTP GET 요청을 API 서버로 전송
@@ -250,7 +247,7 @@ async function loadTodos() {
             4. fetch()가 Response 객체 반환
                fetch() returns Response object
         */
-        const response = await fetch(API_BASE_URL, {
+        const response = await fetch(url, {
             method: 'GET',
             headers: {
                 'Accept': 'application/json'
@@ -299,146 +296,6 @@ async function loadTodos() {
     }
 }
 
-/*
-    ===========================
-    할일 추가 (CREATE)
-    Add To-Do (CREATE)
-    ===========================
-
-    REST API의 POST 요청을 사용하여 새로운 할일 생성
-    Use REST API's POST request to create new to-do
-
-    HTTP 요청 예시 (HTTP Request Example):
-    POST http://localhost:5000/api/todos
-    Content-Type: application/json
-
-    {
-        "title": "새로운 할일"
-    }
-
-    응답 예시 (Response Example):
-    {
-        "id": 3,
-        "title": "새로운 할일",
-        "isCompleted": false
-    }
-*/
-async function addTodo(title) {
-    console.log(`➕ 할일 추가 중: "${title}" (Adding to-do: "${title}")`);
-
-    try {
-        /*
-            POST 요청 보내기 (Send POST request)
-
-            요청 본문 (Request body):
-            - title: 할일 제목 (To-do title)
-            - JSON.stringify(): JavaScript 객체를 JSON 문자열로 변환
-            - JSON.stringify(): Convert JavaScript object to JSON string
-        */
-        const response = await fetch(API_BASE_URL, {
-            method: 'POST',           // HTTP 메서드: POST (생성)
-            headers: {
-                'Content-Type': 'application/json',  // 보내는 데이터 형식
-                'Accept': 'application/json'         // 받을 데이터 형식
-            },
-            /*
-                body: 요청 본문 (Request body)
-                서버로 전송할 데이터 (Data to send to server)
-            */
-            body: JSON.stringify({
-                title: title
-            })
-        });
-
-        if (!response.ok) {
-            throw new Error(`HTTP 에러! 상태: ${response.status}`);
-        }
-
-        /*
-            서버가 생성된 할일 객체를 반환
-            Server returns created to-do object
-        */
-        const newTodo = await response.json();
-
-        console.log('✅ 할일 추가 성공:', newTodo);
-        showSuccess(`"${title}" 항목이 추가되었습니다! (Item "${title}" added!)`);
-
-        /*
-            목록 새로고침 (Refresh list)
-            새로 추가된 항목을 포함하여 다시 로드
-            Reload to include newly added item
-        */
-        await loadTodos();
-
-    } catch (error) {
-        console.error('❌ 할일 추가 실패:', error);
-        showError(`할일 추가 실패: ${error.message} (Failed to add to-do)`);
-    }
-}
-
-/*
-    ===========================
-    할일 수정 (UPDATE)
-    Update To-Do (UPDATE)
-    ===========================
-
-    REST API의 PUT 요청을 사용하여 기존 할일 수정
-    Use REST API's PUT request to update existing to-do
-
-    HTTP 요청 예시 (HTTP Request Example):
-    PUT http://localhost:5000/api/todos/1
-    Content-Type: application/json
-
-    {
-        "id": 1,
-        "title": "수정된 할일",
-        "isCompleted": false
-    }
-*/
-async function updateTodo(id, title, isCompleted) {
-    console.log(`✏️ 할일 수정 중 (ID: ${id}): "${title}", 완료: ${isCompleted}`);
-
-    try {
-        /*
-            PUT 요청: 리소스 전체를 수정
-            PUT request: Update entire resource
-
-            URL에 ID 포함: /api/todos/{id}
-            Include ID in URL: /api/todos/{id}
-        */
-        const response = await fetch(`${API_BASE_URL}/${id}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify({
-                id: id,                    // 수정할 항목의 ID
-                title: title,              // 새로운 제목
-                isCompleted: isCompleted   // 완료 상태
-            })
-        });
-
-        if (!response.ok) {
-            if (response.status === 404) {
-                throw new Error('할일을 찾을 수 없습니다. (To-do not found)');
-            }
-            throw new Error(`HTTP 에러! 상태: ${response.status}`);
-        }
-
-        console.log('✅ 할일 수정 성공 (Update successful)');
-        showSuccess('할일이 수정되었습니다! (To-do updated!)');
-
-        /*
-            목록 새로고침 (Refresh list)
-        */
-        await loadTodos();
-
-    } catch (error) {
-        console.error('❌ 할일 수정 실패:', error);
-        showError(`할일 수정 실패: ${error.message} (Failed to update to-do)`);
-    }
-}
 
 /*
     ===========================
@@ -569,116 +426,136 @@ async function deleteTodo(id) {
 
 /*
     ===========================
-    인라인 편집 모드 시작
-    Start Inline Edit Mode
+    검색 및 필터 적용
+    Apply Search and Filters
     ===========================
 
-    할일 텍스트를 입력 필드로 교체하여 바로 수정 가능하게 함
-    Replace to-do text with input field for immediate editing
+    사용자가 입력한 검색어와 우선순위 필터를 적용하여 할일 목록 다시 로드
+    Reload to-do list with user-entered search term and priority filter
 */
-function startEdit(id, currentTitle) {
-    console.log(`✏️ 편집 모드 시작 (ID: ${id})`);
+function applyFilters() {
+    console.log('🔍 검색 및 필터 적용 중... (Applying search and filters...)');
 
-    /*
-        querySelector(): CSS 선택자로 요소 찾기
-        querySelector(): Find element by CSS selector
+    // 검색 입력값 가져오기 (Get search input value)
+    const searchInput = document.getElementById('searchInput');
+    const searchValue = searchInput ? searchInput.value.trim() : '';
 
-        [data-id="${id}"]: data-id 속성이 id와 일치하는 요소
-        [data-id="${id}"]: Element with data-id attribute matching id
-    */
-    const todoItem = document.querySelector(`[data-id="${id}"]`);
-    const textSpan = todoItem.querySelector('.todo-text');
-    const actions = todoItem.querySelector('.todo-actions');
+    // 우선순위 필터값 가져오기 (Get priority filter value)
+    const prioritySelect = document.getElementById('priorityFilter');
+    const priorityValue = prioritySelect ? prioritySelect.value : '';
 
-    /*
-        기존 텍스트를 입력 필드로 교체 (Replace text with input field)
-    */
-    textSpan.innerHTML = `
-        <input
-            type="text"
-            class="todo-edit-input"
-            value="${currentTitle}"
-            id="edit-input-${id}"
-        >
-    `;
+    console.log(`검색어: "${searchValue}", 우선순위: "${priorityValue}"`);
 
-    /*
-        버튼을 저장/취소 버튼으로 교체 (Replace buttons with save/cancel)
-    */
-    actions.innerHTML = `
-        <button class="btn-save" onclick="saveEdit(${id})">
-            💾 저장 (Save)
-        </button>
-        <button class="btn-cancel" onclick="cancelEdit(${id}, '${escapeHtml(currentTitle)}')">
-            ❌ 취소 (Cancel)
-        </button>
-    `;
+    // 필터 객체 생성 (Create filter object)
+    const filters = {};
 
-    /*
-        입력 필드에 포커스 및 텍스트 선택 (Focus and select text in input field)
-    */
-    const input = document.getElementById(`edit-input-${id}`);
-    input.focus();
-    input.select();  // 모든 텍스트 선택 (Select all text)
+    if (searchValue !== '') {
+        filters.search = searchValue;
+    }
 
-    /*
-        Enter 키로 저장, Escape 키로 취소
-        Save with Enter key, cancel with Escape key
-    */
-    input.addEventListener('keydown', function(event) {
-        if (event.key === 'Enter') {
-            saveEdit(id);
-        } else if (event.key === 'Escape') {
-            cancelEdit(id, currentTitle);
+    if (priorityValue !== '') {
+        filters.priority = parseInt(priorityValue);
+    }
+
+    // 클리어 버튼 표시/숨김 (Show/hide clear button)
+    const clearButton = document.getElementById('clearButton');
+    if (clearButton) {
+        if (searchValue !== '' || priorityValue !== '') {
+            clearButton.style.display = 'inline-block';
+        } else {
+            clearButton.style.display = 'none';
         }
-    });
+    }
+
+    // 필터 적용하여 할일 목록 다시 로드 (Reload to-do list with filters)
+    loadTodos(filters);
 }
 
 /*
     ===========================
-    편집 저장
-    Save Edit
+    검색 및 필터 초기화
+    Clear Search and Filters
     ===========================
+
+    모든 검색 및 필터를 초기화하고 전체 목록 다시 로드
+    Reset all search and filters and reload full list
 */
-async function saveEdit(id) {
-    const input = document.getElementById(`edit-input-${id}`);
-    const newTitle = input.value.trim();
+function clearFilters() {
+    console.log('🔄 검색 및 필터 초기화... (Clearing search and filters...)');
 
-    /*
-        입력 검증 (Input validation)
-    */
-    if (!newTitle) {
-        showError('할일 제목을 입력해주세요. (Please enter a to-do title)');
-        input.focus();
-        return;
+    // 검색 입력 초기화 (Reset search input)
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+        searchInput.value = '';
     }
 
-    /*
-        현재 할일 찾기 (Find current to-do)
-    */
-    const todo = allTodos.find(t => t.id === id);
-
-    if (todo) {
-        await updateTodo(id, newTitle, todo.isCompleted);
+    // 우선순위 필터 초기화 (Reset priority filter)
+    const prioritySelect = document.getElementById('priorityFilter');
+    if (prioritySelect) {
+        prioritySelect.value = '';
     }
+
+    // 클리어 버튼 숨김 (Hide clear button)
+    const clearButton = document.getElementById('clearButton');
+    if (clearButton) {
+        clearButton.style.display = 'none';
+    }
+
+    // 필터 없이 전체 목록 다시 로드 (Reload full list without filters)
+    loadTodos();
 }
 
 /*
     ===========================
-    편집 취소
-    Cancel Edit
+    상세 페이지로 이동
+    Navigate to Detail Page
     ===========================
-
-    원래 상태로 복원 (Restore to original state)
 */
-function cancelEdit(id, originalTitle) {
-    console.log(`❌ 편집 취소 (ID: ${id})`);
+function viewTodoDetail(id, event) {
+    if (event) event.stopPropagation();
+    console.log(`👁️ 상세 페이지로 이동 (ID: ${id})`);
+    window.location.href = `index.php?page=detail&id=${id}`;
+}
 
-    /*
-        목록을 다시 렌더링하여 원래 상태로 복원
-        Re-render list to restore original state
-    */
-    renderTodos(allTodos);
+/*
+    ===========================
+    수정 페이지로 이동
+    Navigate to Edit Page
+    ===========================
+*/
+function editTodo(id, event) {
+    if (event) event.stopPropagation();
+    console.log(`✏️ 수정 페이지로 이동 (ID: ${id})`);
+    window.location.href = `index.php?page=form&id=${id}`;
+}
+
+/*
+    ===========================
+    우선순위 뱃지 생성
+    Create Priority Badge
+    ===========================
+*/
+function getPriorityBadge(priority) {
+    const badges = {
+        0: '<span class="priority-badge priority-low">낮음</span>',
+        1: '<span class="priority-badge priority-normal">보통</span>',
+        2: '<span class="priority-badge priority-high">높음</span>',
+        3: '<span class="priority-badge priority-urgent">긴급</span>'
+    };
+    return badges[priority] || badges[1];
+}
+
+/*
+    ===========================
+    날짜 포맷팅
+    Format Date
+    ===========================
+*/
+function formatDate(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
 }
 
 /*
@@ -798,19 +675,54 @@ function renderTodos(todos) {
         join(): 배열의 요소들을 문자열로 결합
         join(): Combine array elements into string
     */
-    const todosHtml = todos.map(todo => `
-        <div class="todo-item ${todo.isCompleted ? 'completed' : ''}" data-id="${todo.id}">
-            <input
-                type="checkbox"
-                class="todo-checkbox"
-                ${todo.isCompleted ? 'checked' : ''}
-                onchange="toggleTodo(${todo.id})"
-            >
-            <span class="todo-text">${escapeHtml(todo.title)}</span>
-            <div class="todo-actions">
+    const todosHtml = todos.map(todo => {
+        // 우선순위 뱃지
+        const priorityBadge = getPriorityBadge(todo.priority);
+
+        // 마감일 표시
+        let dueDateHtml = '';
+        if (todo.dueDate) {
+            const dueDate = new Date(todo.dueDate);
+            const dateStr = formatDate(dueDate);
+            const isOverdue = dueDate < new Date() && !todo.isCompleted;
+            dueDateHtml = `<span class="todo-due-date ${isOverdue ? 'overdue' : ''}">${dateStr}</span>`;
+        }
+
+        // 카테고리 표시
+        const categoryHtml = todo.category
+            ? `<span class="todo-category">${escapeHtml(todo.category)}</span>`
+            : '';
+
+        return `
+        <div class="todo-item ${todo.isCompleted ? 'completed' : ''}" data-id="${todo.id}" onclick="viewTodoDetail(${todo.id}, event)">
+            <div class="todo-content">
+                <input
+                    type="checkbox"
+                    class="todo-checkbox"
+                    ${todo.isCompleted ? 'checked' : ''}
+                    onchange="toggleTodo(${todo.id})"
+                    onclick="event.stopPropagation()"
+                >
+                <div class="todo-info">
+                    <span class="todo-text">${escapeHtml(todo.title)}</span>
+                    <div class="todo-meta">
+                        ${priorityBadge}
+                        ${categoryHtml}
+                        ${dueDateHtml}
+                    </div>
+                </div>
+            </div>
+            <div class="todo-actions" onclick="event.stopPropagation()">
+                <button
+                    class="btn-icon-action btn-view"
+                    onclick="viewTodoDetail(${todo.id}, event)"
+                    title="상세보기 (View)"
+                >
+                    👁️
+                </button>
                 <button
                     class="btn-icon-action btn-edit"
-                    onclick="startEdit(${todo.id}, '${escapeHtml(todo.title)}')"
+                    onclick="editTodo(${todo.id}, event)"
                     title="수정 (Edit)"
                 >
                     ✏️
@@ -824,7 +736,8 @@ function renderTodos(todos) {
                 </button>
             </div>
         </div>
-    `).join('');
+    `;
+    }).join('');
 
     /*
         innerHTML: 요소의 HTML 내용을 설정

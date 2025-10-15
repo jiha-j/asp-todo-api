@@ -72,36 +72,67 @@ namespace TodoApi.Controllers
         }
 
         // ==========================================
-        // GET: api/todo
+        // GET: api/todos
         // ==========================================
         // [한글] 모든 Todo 항목을 조회하는 엔드포인트입니다.
+        //       쿼리 파라미터로 필터링/검색 가능합니다.
         //       HTTP GET 요청을 처리합니다.
         //
         // [English] Endpoint to retrieve all todo items.
+        //           Supports filtering/searching via query parameters.
         //           Handles HTTP GET requests.
+        //
+        // 예시 (Examples):
+        // GET /api/todos - 전체 목록
+        // GET /api/todos?priority=2 - 우선순위가 "높음"인 항목만
+        // GET /api/todos?search=프로젝트 - 제목에 "프로젝트" 포함된 항목만
+        // GET /api/todos?priority=3&search=회의 - 복합 검색
         //
         // Java Spring 비교:
         // @GetMapping("")
-        // public List<TodoItem> getAllTodos()
+        // public List<TodoItem> getAllTodos(@RequestParam(required=false) Integer priority, @RequestParam(required=false) String search)
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<TodoItem>>> GetAllTodos()
+        public async Task<ActionResult<IEnumerable<TodoItem>>> GetAllTodos(
+            [FromQuery] int? priority,    // 우선순위 필터 (선택사항)
+            [FromQuery] string? search    // 제목 검색 (선택사항)
+        )
         {
             // ==========================================
-            // ActionResult<T> Explanation
+            // Query Parameter Explanation
             // ==========================================
             //
-            // [한글] ActionResult<T>는 HTTP 응답을 나타냅니다.
-            //       T는 성공 시 반환할 데이터 타입입니다.
-            //       다양한 HTTP 상태 코드와 함께 데이터를 반환할 수 있습니다.
+            // [한글] [FromQuery]는 URL 쿼리 문자열에서 값을 읽어옵니다.
+            //       int?와 string?는 Nullable 타입으로 선택적 파라미터입니다.
+            //       값이 제공되지 않으면 null이 됩니다.
             //
-            // [English] ActionResult<T> represents HTTP response.
-            //           T is the data type to return on success.
-            //           Can return data with various HTTP status codes.
+            // [English] [FromQuery] reads values from URL query string.
+            //           int? and string? are nullable types for optional parameters.
+            //           If not provided, values will be null.
             //
             // Java Spring 비교:
-            // ActionResult<T> → ResponseEntity<T>
+            // [FromQuery] int? priority → @RequestParam(required=false) Integer priority
 
             var todos = await _todoService.GetAllTodosAsync();
+
+            // ==========================================
+            // 우선순위 필터링 (Priority Filtering)
+            // ==========================================
+            if (priority.HasValue)
+            {
+                // [한글] 지정된 우선순위와 일치하는 항목만 필터링
+                // [English] Filter items matching specified priority
+                todos = todos.Where(t => (int)t.Priority == priority.Value);
+            }
+
+            // ==========================================
+            // 제목 검색 (Title Search)
+            // ==========================================
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                // [한글] 제목에 검색어가 포함된 항목만 필터링 (대소문자 무시)
+                // [English] Filter items where title contains search term (case-insensitive)
+                todos = todos.Where(t => t.Title.Contains(search, StringComparison.OrdinalIgnoreCase));
+            }
 
             // [한글] Ok(data)는 200 OK 응답과 함께 데이터를 반환합니다.
             //       JSON 형식으로 자동 직렬화됩니다.
