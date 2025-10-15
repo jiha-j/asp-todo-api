@@ -318,6 +318,7 @@ include LAYOUT_PATH . '/header.php';
                     type="datetime-local"
                     id="dueDate"
                     class="form-input"
+                    value="<?= date('Y-m-d\T18:00', strtotime('+1 day')) ?>"
                 >
                 <div class="form-hint">마감일을 설정하지 않으려면 비워두세요.</div>
             </div>
